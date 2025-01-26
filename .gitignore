@@ -2,6 +2,6 @@ __pycache__
 venv
 *.env
 *.csv
-*.txt
+data.txt
 *.json
 *.ipynb
