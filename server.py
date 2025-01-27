@@ -1,7 +1,7 @@
 import os
 import time
 import streamlit as st
-from backend import setup_model, generate_response
+from backend import setup_model, generate_response, connect_users
 
 def stream(response):
     for word in response.split():
@@ -10,7 +10,17 @@ def stream(response):
 
 st.title("Dallas Restaurant Recommender")
 
-retriever = setup_model()
+@st.cache_resource()
+def get_retriever():
+    return setup_model()
+
+retriever = get_retriever()
+
+@st.cache_resource()
+def get_user_db():
+    return connect_users()
+
+db = get_user_db()
 
 # with st.container(border=True):
 if 'chat' not in st.session_state:

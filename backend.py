@@ -1,4 +1,5 @@
 import os
+import pymongo
 from openai import OpenAI
 from pinecone import Pinecone
 from dotenv import load_dotenv
@@ -53,3 +54,15 @@ def generate_response(user_input, retriever):
     )
 
     return completion.choices[0].message
+
+
+def connect_users():
+    load_dotenv()
+
+    DB_STRING = os.getenv("DB_STRING")
+    DB = os.getenv("DATABASE")
+
+    client = pymongo.MongoClient(DB_STRING)
+    db = client[DB]
+
+    return db
