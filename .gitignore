@@ -6,3 +6,4 @@ data.txt
 *.json
 *.ipynb
 .streamlit/
+test.py
