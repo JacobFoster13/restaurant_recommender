@@ -6,4 +6,5 @@ backgroundColor = \"#233041\"
 
 [server]
 headless = true
-enableCORS = false" > .streamlit/config.toml
+enableCORS = false
+port = $PORT" > .streamlit/config.toml
