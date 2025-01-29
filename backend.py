@@ -65,4 +65,4 @@ def connect_users():
     client = pymongo.MongoClient(DB_STRING)
     db = client[DB]
 
-    return db
+    return db  
