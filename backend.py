@@ -1,8 +1,10 @@
 import os
-import pymongo
 from openai import OpenAI
+from bson import ObjectId
+from datetime import datetime
 from pinecone import Pinecone
 from dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_pinecone import PineconeVectorStore
@@ -62,7 +64,29 @@ def connect_users():
     DB_STRING = os.getenv("DB_STRING")
     DB = os.getenv("DATABASE")
 
-    client = pymongo.MongoClient(DB_STRING)
+    client = MongoClient(DB_STRING)
     db = client[DB]
 
     return db  
+
+def save_chat(email, chat, db, chat_id=None, title=None):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if chat_id:
+        db.users.update_one(
+            {"email": email, "chat_history._id": ObjectId(chat_id)},
+            {"$set": {"chat_history.$.messages": chat}}
+        )
+    else:  # insert new chat
+        db.users.update_one(
+            {"email": email},
+            {"$push": {"chat_history": {
+                "_id": ObjectId(),
+                "timestamp": timestamp,
+                "title": title or "Untitled Chat",
+                "messages": chat
+            }}}
+        )
+
+def load_chats(email, db):
+    user = db.users.find_one({"email": email})
+    return user.get("chat_history", [])
